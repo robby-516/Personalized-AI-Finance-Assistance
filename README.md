@@ -128,10 +128,9 @@ For major changes, open an issue to discuss your ideas before implementation.
 
 ---
 
-## 📜 License
-
-This project is licensed under the **MIT License**.
-You are free to use, modify, and distribute it with attribution.
+## 📜 Usage Terms
+This project is shared for educational and demonstration purposes only.  
+You may view and run the code locally, but you may not modify, redistribute, or use it for commercial purposes without explicit permission from the author.
 
 ---
 
