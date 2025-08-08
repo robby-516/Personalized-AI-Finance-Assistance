@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Financial Intelligence Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --primary-dark: #134e4a;
+            --primary-light: #2dd4bf;
+            --secondary-color: #0d9488;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            
+            --primary-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            --secondary-gradient: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+            --success-gradient: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 100%);
+            --warning-gradient: linear-gradient(135deg, var(--warning-color) 0%, var(--danger-color) 100%);
+            --info-gradient: linear-gradient(135deg, var(--info-color) 0%, var(--primary-color) 100%);
+            --dark-gradient: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-dark) 100%);
+            
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --accent-color: #2dd4bf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Hero Header */
+        .hero-header {
+            background: var(--primary-gradient);
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            max-width: 700px;
+        }
+
+        /* Button Styles */
+        .btn-premium {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.3);
+            background: transparent;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-section {
+            margin-top: -2rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: none;
+            height: 100%;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid;
+        }
+
+        .stat-card.income-card {
+            border-top-color: var(--success-color);
+        }
+
+        .stat-card.expense-card {
+            border-top-color: var(--danger-color);
+        }
+
+        .stat-card.balance-card {
+            border-top-color: var(--primary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.income {
+            color: var(--success-color);
+        }
+
+        .stat-icon.expense {
+            color: var(--danger-color);
+        }
+
+        .stat-icon.balance {
+            color: var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar-custom {
+            height: 6px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .progress-fill.income {
+            background: var(--success-gradient);
+        }
+
+        .progress-fill.expense {
+            background: var(--warning-gradient);
+        }
+
+        .progress-fill.balance {
+            background: var(--primary-gradient);
+        }
+
+        /* Main Content */
+        .main-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header-custom {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #f8fafc;
+        }
+
+        .card-header-custom h4 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        /* AI Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 15px rgba(99, 102, 241, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            max-height: 500px;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-window.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h5 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .chat-header .ai-status {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8fafc;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .message.user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: var(--primary-gradient);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+
+        .message.bot .message-time {
+            text-align: left;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .chat-input input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .chat-send {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            border-bottom-left-radius: 0.25rem;
+            max-width: 30%;
+            box-shadow: var(--card-shadow);
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-light);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Suggested Questions */
+        .suggested-questions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .suggested-question {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .suggested-question:hover {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border-color: var(--primary-light);
+        }
+
+        /* Insights Cards */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border-left: 4px solid;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .insight-card.achievement {
+            border-left-color: var(--success-color);
+        }
+
+        .insight-card.opportunity {
+            border-left-color: var(--warning-color);
+        }
+
+        .insight-card.warning {
+            border-left-color: var(--danger-color);
+        }
+
+        .insight-card.info {
+            border-left-color: var(--info-color);
+        }
+
+        .insight-type {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-type.achievement {
+            color: var(--success-color);
+        }
+
+        .insight-type.opportunity {
+            color: var(--warning-color);
+        }
+
+        .insight-type.warning {
+            color: var(--danger-color);
+        }
+
+        .insight-type.info {
+            color: var(--info-color);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .chatbot-container {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .chat-window {
+                width: calc(100vw - 40px);
+                max-height: 60vh;
+                right: -10px;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Loading States */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Tooltip */
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: var(--text-light);
+            font-size: 0.7rem;
+            margin-left: 0.25rem;
+            cursor: help;
+            transition: var(--transition);
+        }
+
+        .tooltip-icon:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-header">
+        <div class="container">
+            <div class="row align-items-center hero-content">
+                <div class="col-lg-8">
+                    <h1 class="hero-title fade-in">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Financial Intelligence Dashboard
+                    </h1>
+                    <p class="hero-subtitle fade-in delay-1">
+                        AI-powered insights and personalized recommendations to optimize your financial health
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end fade-in delay-2">
+                    <a href="{% url 'finances:dashboard' %}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-arrow-left me-2"></i> Dashboard
+                    </a>
+                    <a href="{% url 'finances:export_expenses' %}" class="btn-premium">
+                        <i class="fas fa-download me-2"></i> Export Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-section">
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="stat-card income-card fade-in">
+                        <div class="stat-icon income">
+                            <i class="fas fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="stat-value text-success">₹{{ total_income|floatformat:2 }}</div>
+                        <div class="stat-label">Total Income</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill income" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card expense-card fade-in delay-1">
+                        <div class="stat-icon expense">
+                            <i class="fas fa-arrow-trend-down"></i>
+                        </div>
+                        <div class="stat-value text-danger">₹{{ total_expenses|floatformat:2 }}</div>
+                        <div class="stat-label">Total Expenses</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill expense" style="width: {{ expense_percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card balance-card fade-in delay-2">
+                        <div class="stat-icon balance">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="stat-value text-primary">₹{{ balance|floatformat:2 }}</div>
+                        <div class="stat-label">Net Savings</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill balance" style="width: {{ savings_percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="main-card fade-in delay-3">
+                    <div class="card-header-custom">
+                        <h4><i class="fas fa-robot me-2"></i>AI Financial Assistant</h4>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Financial Insights & Recommendations</h5>
+                                <p class="text-muted mb-4">Get personalized advice based on your spending patterns and financial goals.</p>
+                                
+                                <div class="suggested-questions">
+                                    <div class="suggested-question" onclick="askQuestion('How can I improve my savings rate?')">
+                                        <i class="fas fa-piggy-bank me-2"></i> Improve my savings
+                                    </div>
+                                    <div class="suggested-question" onclick="askQuestion('What are my biggest expense categories?')">
+                                        <i class="fas fa-chart-pie me-2"></i> Spending breakdown
+                                    </div>
+                                    <div class="suggested-question" onclick="askQuestion('Am I on track for my financial goals?')">
+                                        <i class="fas fa-bullseye me-2"></i> Goal progress
+                                    </div>
+                                    <div class="suggested-question" onclick="askQuestion('Show me spending trends from last month')">
+                                        <i class="fas fa-chart-line me-2"></i> Monthly trends
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="insights-grid">
+                                    <div class="insight-card achievement">
+                                        <span class="insight-type achievement">
+                                            <i class="fas fa-trophy me-1"></i> Achievement
+                                        </span>
+                                        <p class="mb-0">Your savings rate is {{ financial_data.savings_rate|floatformat:0 }}%, which is better than last month!</p>
+                                    </div>
+                                    
+                                    {% if insights %}
+                                    <div class="insight-card opportunity">
+                                        <span class="insight-type opportunity">
+                                            <i class="fas fa-lightbulb me-1"></i> Opportunity
+                                        </span>
+                                        <p class="mb-0">Reducing dining out by 20% could save you ₹{{ potential_savings|floatformat:0 }} monthly.</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="empty-state">
+                                        <i class="fas fa-lightbulb"></i>
+                                        <p class="mb-0">Add more transactions to get personalized recommendations.</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div class="chatbot-container">
+        <button class="chat-toggle" onclick="toggleChat()">
+            <i class="fas fa-robot" id="chatIcon"></i>
+        </button>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h5>
+                    <i class="fas fa-robot me-2"></i>
+                    AI Financial Assistant
+                    <div class="ai-status"></div>
+                </h5>
+                <button class="btn btn-sm text-white" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <div>👋 Hello! I'm your AI Financial Assistant. I can analyze your spending, suggest optimizations, and help you reach your financial goals faster.</div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+                <div class="message bot">
+                    <div class="message-content">
+                        <div>Try asking me about:</div>
+                        <ul class="mb-0" style="padding-left: 1.25rem;">
+                            <li>Your spending patterns</li>
+                            <li>Ways to save more</li>
+                            <li>Financial goal progress</li>
+                        </ul>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ask about your finances..." onkeypress="handleKeyPress(event)">
+                <button class="chat-send" onclick="sendMessage()" id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Financial data from Django template
+        const financialData = {
+            totalIncome: parseFloat('{{ total_income|default:0 }}'),
+            totalExpenses: parseFloat('{{ total_expenses|default:0 }}'),
+            netSavings: parseFloat('{{ balance|default:0 }}'),
+            savingsRate: parseFloat('{{ financial_data.savings_rate|default:0 }}'),
+            expenseCategories: JSON.parse('{{ expense_categories_json|escapejs }}' || '{}'),
+            monthlyTrends: JSON.parse('{{ monthly_trends_json|escapejs }}' || '{}')
+        };
+
+        // Chat functionality
+        let chatOpen = false;
+        let chatHistory = [
+            {
+                role: "assistant",
+                content: "Hello! I'm your AI Financial Assistant. I can analyze your spending, suggest optimizations, and help you reach your financial goals faster."
+            },
+            {
+                role: "assistant",
+                content: "Try asking me about:\n- Your spending patterns\n- Ways to save more\n- Financial goal progress"
+            }
+        ];
+
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const chatWindow = document.getElementById('chatWindow');
+            const chatToggle = document.querySelector('.chat-toggle');
+            const chatIcon = document.getElementById('chatIcon');
+            
+            chatWindow.classList.toggle('active');
+            chatToggle.classList.toggle('active');
+            
+            if (chatOpen) {
+                chatIcon.className = 'fas fa-times';
+                document.getElementById('chatInput').focus();
+            } else {
+                chatIcon.className = 'fas fa-robot';
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function askQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            if (!chatOpen) {
+                toggleChat();
+            }
+            setTimeout(() => sendMessage(), 300);
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage('user', message);
+            chatHistory.push({ role: "user", content: message });
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Disable send button
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            
+            try {
+                // Call backend API
+                const response = await callFinancialAssistantAPI(message);
+                
+                // Add assistant response to chat
+                removeTypingIndicator();
+                addMessage('bot', response);
+                chatHistory.push({ role: "assistant", content: response });
+                
+                // Auto-scroll to bottom
+                const messagesContainer = document.getElementById('chatMessages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+                removeTypingIndicator();
+                addMessage('bot', "Sorry, I'm having trouble processing your request. Please try again later.");
+            } finally {
+                sendButton.disabled = false;
+            }
+        }
+
+        function addMessage(sender, text) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Convert markdown-like lists to HTML
+            const formattedText = text.replace(/\n- (.+)/g, '\n<li>$1</li>')
+                                    .replace(/\n\* (.+)/g, '\n<li>$1</li>');
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div>${formattedText}</div>
+                    <div class="message-time">${timeString}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+    async function callFinancialAssistantAPI(message) {
+    try {
+        const response = await fetch('/finances/api/financial-assistant/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': window.csrfToken || getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                message: message,
+                chat_history: chatHistory,
+                user_financial_data: {
+                    total_income: financialData.totalIncome,
+                    total_expenses: financialData.totalExpenses,
+                    net_savings: financialData.netSavings,
+                    savings_rate: financialData.savingsRate,
+                    expense_categories: financialData.expenseCategories,
+                    monthly_trends: financialData.monthlyTrends
+                }
+                // No need to send financial_data - server will calculate it
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Update financial data if needed
+        if (data.financial_data) {
+            Object.assign(financialData, data.financial_data);
+        }
+        
+        return data.response;
+        
+    } catch (error) {
+        console.error('Error calling financial assistant API:', error);
+        return "I'm having trouble accessing your financial data. Please try again later.";
+    }
+}
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements as they come into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+</html>

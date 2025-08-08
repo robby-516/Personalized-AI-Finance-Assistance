@@ -1,0 +1,714 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense - FinSage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --primary-dark: #134e4a;
+            --secondary-color: #0d9488;
+            --accent-color: #2dd4bf;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --text-color: #1e293b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            background: linear-gradient(45deg, #ffffff, #a7f3d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+            color: var(--white);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-title {
+            color: var(--text-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--white);
+            position: relative;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-control-currency {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            color: var(--text-color);
+            font-weight: 600;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+
+        .form-control-currency .form-control {
+            padding-left: 40px;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+
+        .category-option {
+            display: none;
+        }
+
+        .category-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.05), rgba(45, 212, 191, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-label:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .category-label:hover::before {
+            opacity: 1;
+        }
+
+        .category-option:checked + .category-label {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(45, 212, 191, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .category-option:checked + .category-label::before {
+            opacity: 1;
+        }
+
+        .category-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .category-label:hover .category-icon {
+            transform: scale(1.1);
+            color: var(--primary-color);
+        }
+
+        .category-option:checked + .category-label .category-icon {
+            color: var(--success-color);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Floating label effect */
+        .floating-label {
+            position: relative;
+        }
+
+        .floating-label input:focus + label,
+        .floating-label input:not(:placeholder-shown) + label {
+            transform: translateY(-25px) scale(0.8);
+            color: var(--primary-color);
+        }
+
+        .floating-label label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            color: #64748b;
+        }
+
+        /* Success animation */
+        .success-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--success-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            opacity: 0;
+            animation: bounceIn 0.5s ease 0.3s both;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .category-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Interactive hover effects */
+        .form-group:hover .form-label {
+            color: var(--primary-color);
+            transition: color 0.2s ease;
+        }
+
+        /* Pulse animation for required fields */
+        .form-control:invalid {
+            animation: none;
+        }
+
+        .form-control:focus:invalid {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <a href="{% url 'finances:dashboard' %}" style="text-decoration: none;">
+                <img src="../static/images/logo.png" alt="FinSage Logo" style="height: 50px; margin-right: 10px;">
+                <span class="brand-name">FinSage</span>
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'finances:dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fas fa-minus-circle" style="color: var(--error-color); margin-right: 12px;"></i>
+                Add Expense
+            </h2>
+            <form method="POST" id="expenseForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="amount" class="form-label">
+                        <i class="fas fa-rupee-sign" style="margin-right: 8px; color: var(--error-color);"></i>
+                        Amount (₹)
+                    </label>
+                    <div class="form-control-currency">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" name="amount" id="amount" class="form-control" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
+                    <small class="form-text">
+                        <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
+                        Enter the expense amount
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description" class="form-label">
+                        <i class="fas fa-edit" style="margin-right: 8px; color: var(--primary-color);"></i>
+                        Description
+                    </label>
+                    <input type="text" name="description" id="description" class="form-control" placeholder="What was this expense for?" maxlength="100" required>
+                    <small class="form-text">
+                        <i class="fas fa-lightbulb" style="margin-right: 4px;"></i>
+                        Brief description of your expense
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date" class="form-label">
+                        <i class="fas fa-calendar-alt" style="margin-right: 8px; color: var(--secondary-color);"></i>
+                        Date
+                    </label>
+                    <input type="date" name="date" id="date" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tags" style="margin-right: 8px; color: var(--accent-color);"></i>
+                        Category
+                    </label>
+                    <div class="category-container">
+                        <input type="radio" name="category" id="cat-food" value="food" class="category-option" checked>
+                        <label for="cat-food" class="category-label">
+                            <i class="fas fa-utensils category-icon"></i>
+                            <span style="font-weight: 600;">Food</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-transport" value="transport" class="category-option">
+                        <label for="cat-transport" class="category-label">
+                            <i class="fas fa-car category-icon"></i>
+                            <span style="font-weight: 600;">Transport</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-shopping" value="shopping" class="category-option">
+                        <label for="cat-shopping" class="category-label">
+                            <i class="fas fa-shopping-bag category-icon"></i>
+                            <span style="font-weight: 600;">Shopping</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-bills" value="bills" class="category-option">
+                        <label for="cat-bills" class="category-label">
+                            <i class="fas fa-file-invoice category-icon"></i>
+                            <span style="font-weight: 600;">Bills</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-entertainment" value="entertainment" class="category-option">
+                        <label for="cat-entertainment" class="category-label">
+                            <i class="fas fa-film category-icon"></i>
+                            <span style="font-weight: 600;">Entertainment</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-other" value="other" class="category-option">
+                        <label for="cat-other" class="category-label">
+                            <i class="fas fa-ellipsis-h category-icon"></i>
+                            <span style="font-weight: 600;">Other</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i> 
+                        <span>Save Expense</span>
+                    </button>
+                    <a href="{% url 'finances:dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>
+            <i class="fas fa-heart" style="color: var(--error-color); margin: 0 4px;"></i>
+            FinSage - Your Personal Finance Manager © 2025
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            
+            // Form elements
+            const form = document.getElementById('expenseForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const amountInput = document.getElementById('amount');
+            const descriptionInput = document.getElementById('description');
+            
+            // Real-time validation feedback
+            function validateField(field, condition, message) {
+                const isValid = condition();
+                field.style.borderColor = isValid ? 'var(--success-color)' : 'var(--error-color)';
+                
+                // Add/remove success indicator
+                const existingIcon = field.parentNode.querySelector('.success-check');
+                if (isValid && !existingIcon) {
+                    const successIcon = document.createElement('div');
+                    successIcon.className = 'success-check';
+                    successIcon.innerHTML = '<i class="fas fa-check" style="color: white; font-size: 10px;"></i>';
+                    field.parentNode.appendChild(successIcon);
+                } else if (!isValid && existingIcon) {
+                    existingIcon.remove();
+                }
+                
+                return isValid;
+            }
+            
+            // Real-time validation
+            amountInput.addEventListener('input', function() {
+                validateField(this, () => parseFloat(this.value) > 0, 'Please enter a valid amount');
+                
+                // Format currency display
+                if (this.value) {
+                    const formatted = parseFloat(this.value).toLocaleString('en-IN');
+                    this.setAttribute('data-formatted', `₹${formatted}`);
+                }
+            });
+            
+            descriptionInput.addEventListener('input', function() {
+                validateField(this, () => this.value.trim().length > 0, 'Please enter a description');
+                
+                // Character counter
+                const remaining = 100 - this.value.length;
+                let counter = this.parentNode.querySelector('.char-counter');
+                if (!counter) {
+                    counter = document.createElement('small');
+                    counter.className = 'char-counter';
+                    counter.style.cssText = 'position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.8rem;';
+                    this.parentNode.style.position = 'relative';
+                    this.parentNode.appendChild(counter);
+                }
+                counter.textContent = `${remaining} left`;
+                counter.style.color = remaining < 20 ? 'var(--warning-color)' : '#64748b';
+            });
+            
+            // Category selection animation
+            const categoryInputs = document.querySelectorAll('.category-option');
+            categoryInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    // Remove previous selection animations
+                    document.querySelectorAll('.category-label').forEach(label => {
+                        label.style.animation = '';
+                    });
+                    
+                    // Animate selected category
+                    if (this.checked) {
+                        const label = this.nextElementSibling;
+                        label.style.animation = 'bounceIn 0.5s ease';
+                    }
+                });
+            });
+            
+            // Form submission with loading state
+            form.addEventListener('submit', function(event) {
+                const amount = parseFloat(amountInput.value);
+                const description = descriptionInput.value.trim();
+                
+                if (amount <= 0) {
+                    event.preventDefault();
+                    showNotification('Please enter a valid amount greater than zero.', 'error');
+                    amountInput.focus();
+                    return;
+                }
+                
+                if (description === '') {
+                    event.preventDefault();
+                    showNotification('Please enter a description for this expense.', 'error');
+                    descriptionInput.focus();
+                    return;
+                }
+                
+                // Show loading state
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<div class="loading"></div> Saving...';
+                submitBtn.disabled = true;
+                
+                // Simulate processing time (remove this in production)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+            
+            // Custom notification system
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 16px 24px;
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: 600;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                    max-width: 300px;
+                    box-shadow: var(--shadow-lg);
+                `;
+                
+                const colors = {
+                    error: 'var(--error-color)',
+                    success: 'var(--success-color)',
+                    warning: 'var(--warning-color)',
+                    info: 'var(--primary-color)'
+                };
+                
+                notification.style.background = colors[type] || colors.info;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}" style="margin-right: 8px;"></i>
+                    ${message}
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            // Add CSS for notification animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Welcome animation
+            setTimeout(() => {
+                showNotification('Track your expenses to save more! 💸', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

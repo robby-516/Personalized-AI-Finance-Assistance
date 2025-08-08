@@ -1,0 +1,30 @@
+# .env and environment files
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Django migrations
+migrations/
+*/migrations/
+
+# Uploaded files
+uploads/
+media/
+staticfiles/
+
+# Database
+db.sqlite3
+
+# Tesseract OCR
+tesseractocr/
+tesseract.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

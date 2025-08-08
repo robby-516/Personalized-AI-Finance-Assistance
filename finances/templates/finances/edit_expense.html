@@ -1,0 +1,677 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Expense - FinSage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --primary-dark: #134e4a;
+            --secondary-color: #0d9488;
+            --accent-color: #2dd4bf;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --text-color: #1e293b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            background: linear-gradient(45deg, #ffffff, #a7f3d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--warning-color), #fb923c);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error-color), #f87171);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: var(--white);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warning-color), var(--error-color), #fb923c);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-title {
+            color: var(--text-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--white);
+            position: relative;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-control-currency {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            color: var(--text-color);
+            font-weight: 600;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+
+        .form-control-currency .form-control {
+            padding-left: 40px;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+
+        .category-option {
+            display: none;
+        }
+
+        .category-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.05), rgba(45, 212, 191, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-label:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .category-label:hover::before {
+            opacity: 1;
+        }
+
+        .category-option:checked + .category-label {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(45, 212, 191, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .category-option:checked + .category-label::before {
+            opacity: 1;
+        }
+
+        .category-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .category-label:hover .category-icon {
+            transform: scale(1.1);
+            color: var(--primary-color);
+        }
+
+        .category-option:checked + .category-label .category-icon {
+            color: var(--success-color);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .delete-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+
+        .delete-warning {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            color: var(--error-color);
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+        }
+
+        .errorlist li {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            border-left: 4px solid var(--error-color);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .category-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <a href="{% url 'finances:dashboard' %}" style="text-decoration: none;">
+                <img src="../static/images/logo.png" alt="FinSage Logo" style="height: 50px; margin-right: 10px;">
+                <span class="brand-name">FinSage</span>
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'finances:dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fas fa-edit" style="color: var(--warning-color); margin-right: 12px;"></i>
+                Edit Expense
+            </h2>
+            <form method="POST" id="expenseForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.amount.id_for_label }}" class="form-label">
+                        <i class="fas fa-rupee-sign" style="margin-right: 8px; color: var(--error-color);"></i>
+                        Amount (₹)
+                    </label>
+                    <div class="form-control-currency">
+                        <span class="currency-symbol">₹</span>
+                        {{ form.amount }}
+                    </div>
+                    {% if form.amount.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.amount.errors %}
+                                <li><i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <small class="form-text">
+                        <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
+                        Update the expense amount
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">
+                        <i class="fas fa-edit" style="margin-right: 8px; color: var(--primary-color);"></i>
+                        Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.description.errors %}
+                                <li><i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <small class="form-text">
+                        <i class="fas fa-lightbulb" style="margin-right: 4px;"></i>
+                        Brief description of your expense
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-alt" style="margin-right: 8px; color: var(--secondary-color);"></i>
+                        Date
+                    </label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.date.errors %}
+                                <li><i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tags" style="margin-right: 8px; color: var(--accent-color);"></i>
+                        Category
+                    </label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.category.errors %}
+                                <li><i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="category-container">
+                        <input type="radio" name="category" id="cat-food" value="food" class="category-option">
+                        <label for="cat-food" class="category-label">
+                            <i class="fas fa-utensils category-icon"></i>
+                            <span style="font-weight: 600;">Food</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-transport" value="transport" class="category-option">
+                        <label for="cat-transport" class="category-label">
+                            <i class="fas fa-car category-icon"></i>
+                            <span style="font-weight: 600;">Transport</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-shopping" value="shopping" class="category-option">
+                        <label for="cat-shopping" class="category-label">
+                            <i class="fas fa-shopping-bag category-icon"></i>
+                            <span style="font-weight: 600;">Shopping</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-bills" value="bills" class="category-option">
+                        <label for="cat-bills" class="category-label">
+                            <i class="fas fa-file-invoice category-icon"></i>
+                            <span style="font-weight: 600;">Bills</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-entertainment" value="entertainment" class="category-option">
+                        <label for="cat-entertainment" class="category-label">
+                            <i class="fas fa-film category-icon"></i>
+                            <span style="font-weight: 600;">Entertainment</span>
+                        </label>
+
+                        <input type="radio" name="category" id="cat-other" value="other" class="category-option">
+                        <label for="cat-other" class="category-label">
+                            <i class="fas fa-ellipsis-h category-icon"></i>
+                            <span style="font-weight: 600;">Other</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i> 
+                        <span>Update Expense</span>
+                    </button>
+                    <a href="{% url 'finances:dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+
+            <div class="delete-section">
+                <div class="delete-warning">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                    Danger Zone - This action cannot be undone
+                </div>
+                <button type="button" class="btn btn-danger" id="deleteBtn">
+                    <i class="fas fa-trash-alt"></i> Delete Expense
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>
+            <i class="fas fa-heart" style="color: var(--error-color); margin: 0 4px;"></i>
+            FinSage - Your Personal Finance Manager © 2025
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form elements
+            const form = document.getElementById('expenseForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const categoryInputs = document.querySelectorAll('.category-option');
+            
+            // Apply form control styling to Django form fields
+            const djangoFormFields = document.querySelectorAll('input[type="number"], input[type="text"], input[type="date"], select, textarea');
+            djangoFormFields.forEach(field => {
+                if (!field.classList.contains('form-control')) {
+                    field.classList.add('form-control');
+                }
+                
+                // Special handling for amount field
+                if (field.name === 'amount') {
+                    field.step = '0.01';
+                    field.min = '0.01';
+                    field.placeholder = '0.00';
+                    field.parentNode.classList.add('form-control-currency');
+                }
+                
+                // Special handling for description field
+                if (field.name === 'description') {
+                    field.maxLength = 100;
+                    field.placeholder = 'What was this expense for?';
+                }
+            });
+            
+            // Sync category selection between Django field and radio buttons
+            const djangoCategoryField = document.querySelector('select[name="category"]');
+            if (djangoCategoryField) {
+                // Set initial radio button selection based on Django field value
+                const currentValue = djangoCategoryField.value;
+                if (currentValue) {
+                    const correspondingRadio = document.querySelector(`input[name="category"][value="${currentValue}"]`);
+                    if (correspondingRadio) {
+                        correspondingRadio.checked = true;
+                    }
+                }
+                
+                // Hide Django select field
+                djangoCategoryField.style.display = 'none';
+                
+                // Sync radio buttons with Django field
+                categoryInputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        if (this.checked) {
+                            djangoCategoryField.value = this.value;
+                            
+                            // Animate selected category
+                            const label = this.nextElementSibling;
+                            label.style.animation = 'bounceIn 0.5s ease';
+                        }
+                    });
+                });
+            }
+            
+            // Form submission with loading state
+            form.addEventListener('submit', function(event) {
+                // Show loading state
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<div class="loading"></div> Updating...';
+                submitBtn.disabled = true;
+                
+                // Re-enable after a delay (form will submit)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+            
+            // Delete functionality
+            deleteBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this expense? This action cannot be undone.')) {
+                    // Create a form for deletion
+                    const deleteForm = document.createElement('form');
+                    deleteForm.method = 'POST';
+                    deleteForm.action = window.location.href.replace('/edit/', '/delete/');
+                    
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken;
+                    
+                    deleteForm.appendChild(csrfInput);
+                    document.body.appendChild(deleteForm);
+                    deleteForm.submit();
+                }
+            });
+            
+            // Add CSS for loading animation
+            const style = document.createElement('style');
+            style.textContent = `
+                .loading {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    border-top-color: var(--white);
+                    animation: spin 1s ease-in-out infinite;
+                }
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+                @keyframes bounceIn {
+                    0% { transform: scale(0); opacity: 0; }
+                    50% { transform: scale(1.2); opacity: 1; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
