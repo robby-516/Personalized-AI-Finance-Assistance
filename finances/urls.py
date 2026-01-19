@@ -13,6 +13,10 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('analysis/', views.financial_analysis_view, name='analysis'),
     # path('api/financial-data/', views.financial_data_api, name='financial_data_api'),
+    path('password-reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password-reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     # Income URLs
     path('add_income/', views.add_income, name='add_income'),
@@ -27,6 +31,7 @@ urlpatterns = [
     path('upload-bill/', views.upload_bill, name='upload_bill'),
     path('api/financial-assistant/', views.financial_assistant_api, name='financial-assistant-api'),
     path('finances/api/financial-assistant/', views.financial_assistant_api), 
+    path('financial_assistant_api/', views.financial_assistant_api, name='financial_assistant_api'),
 
 
 ]

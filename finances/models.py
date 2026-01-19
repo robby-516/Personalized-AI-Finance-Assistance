@@ -2,11 +2,24 @@
 from django.db import models
 
 class Income(models.Model):
+    FREQUENCY_CHOICES = [
+        ('', 'One-time'),
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    ]
+
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.CharField(max_length=255)
     date = models.DateField()
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     category = models.CharField(max_length=255, null=True, blank=True)
+
+    # Recurring fields
+    is_recurring = models.BooleanField(default=False)
+    frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, blank=True, null=True)
+    day_of_month = models.PositiveSmallIntegerField(null=True, blank=True, help_text="For monthly recurring only (1-31)")
 
     def __str__(self):
         return f"Income of {self.amount} on {self.date} by {self.user}"
@@ -21,11 +34,24 @@ class Income(models.Model):
         ]
 
 class Expense(models.Model):
+    FREQUENCY_CHOICES = [
+        ('', 'One-time'),
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    ]
+
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.CharField(max_length=255)
     date = models.DateField()
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     category = models.CharField(max_length=255, null=True, blank=True)
+
+    # Recurring fields
+    is_recurring = models.BooleanField(default=False)
+    frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, blank=True, null=True)
+    day_of_month = models.PositiveSmallIntegerField(null=True, blank=True, help_text="For monthly recurring only (1-31)")
 
     def __str__(self):
         return f"Expense of {self.amount} on {self.date} by {self.user}"

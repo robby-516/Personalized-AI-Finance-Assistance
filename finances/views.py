@@ -28,6 +28,32 @@ from groq import Groq
 from .models import Income, Expense, FinancialAnalysis
 from .forms import IncomeForm, ExpenseForm, BillUploadForm
 
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
+
+
+class CustomPasswordResetView(SuccessMessageMixin, auth_views.PasswordResetView):
+    template_name = 'registration/password_reset_form.html'
+    email_template_name = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('finances:password_reset_done')
+    success_message = "Password reset link has been sent to your email."
+
+
+class CustomPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'registration/password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('finances:password_reset_complete')
+    success_message = "Your password has been reset successfully!"
+
+
+class CustomPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'registration/password_reset_complete.html'
+
 groq_client = Groq(api_key='your_api_key')
 
 from django.views.decorators.http import require_POST
@@ -193,9 +219,9 @@ def financial_analysis_view(request):
     balance = total_income - total_expenses
     savings_rate = (total_income - total_expenses) / total_income * 100 if total_income > 0 else 0
     
-    # Group expenses by category - Fix for the 0 non-expression error
+    # Group expenses by category
     expense_by_category = []
-    if total_expenses > 0:  # Only perform this calculation if there are expenses
+    if total_expenses > 0:
         expense_categories = expenses.values('category').annotate(total=Sum('amount')).order_by('-total')
         for category in expense_categories:
             percentage = (category['total'] / total_expenses) * 100 if total_expenses > 0 else 0
@@ -283,6 +309,10 @@ def financial_analysis_view(request):
                 cleaned_rec = re.sub(r'^[-•]\s', '', rec.strip())
                 processed_recommendations.append(cleaned_rec)
     
+    # Compute derived values for recommendations
+    budget_15 = float(total_expenses) * 0.15 if total_expenses > 0 else 0
+    autosave_10 = float(total_income) * 0.10 if total_income > 0 else 0
+    
     context = {
         'financial_data': financial_data,
         'insights': insights,
@@ -292,6 +322,9 @@ def financial_analysis_view(request):
         "total_income": total_income,
         "total_expenses": total_expenses,
         "balance": balance,
+        "budget_15": budget_15,
+        "autosave_10": autosave_10,
+        # "financial_assistant_url": "/finances/api/assistant/"
     }
     
     return render(request, 'finances/analysis.html', context)

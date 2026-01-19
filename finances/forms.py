@@ -7,20 +7,46 @@ from django.forms import ModelForm
 class IncomeForm(ModelForm):
     class Meta:
         model = Income
-        fields = ['amount', 'description', 'date', 'category']
+        fields = ['amount', 'description', 'date', 'category', 'is_recurring', 'frequency', 'day_of_month']
 
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),  # This makes the date field a date picker
+            'description': forms.Textarea(attrs={'rows': 3}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_recurring = cleaned_data.get('is_recurring')
+        frequency = cleaned_data.get('frequency')
+        day_of_month = cleaned_data.get('day_of_month')
+
+        if is_recurring and not frequency:
+            raise forms.ValidationError("Please select a frequency for recurring income.")
+        if frequency == 'monthly' and not day_of_month:
+            raise forms.ValidationError("Please specify the day of the month for monthly recurring.")
+        return cleaned_data
 
 class ExpenseForm(ModelForm):
     class Meta:
         model = Expense
-        fields = ['amount', 'description', 'date','category']
+        fields = ['amount', 'description', 'date','category', 'is_recurring', 'frequency', 'day_of_month']
 
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),  # This makes the date field a date picker
+            'description': forms.Textarea(attrs={'rows': 3}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_recurring = cleaned_data.get('is_recurring')
+        frequency = cleaned_data.get('frequency')
+        day_of_month = cleaned_data.get('day_of_month')
+
+        if is_recurring and not frequency:
+            raise forms.ValidationError("Please select a frequency for recurring expense.")
+        if frequency == 'monthly' and not day_of_month:
+            raise forms.ValidationError("Please specify the day of the month for monthly recurring.")
+        return cleaned_data
 
 class BillUploadForm(forms.ModelForm):
     class Meta:

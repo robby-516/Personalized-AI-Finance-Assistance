@@ -134,3 +134,11 @@ LOGOUT_REDIRECT_URL = 'finances:login'  # Redirect after logout
 LOGIN_URL = 'finances:login'  # Login page URL
 TESSERACT_CMD=r'E:\Mini PRoject\Finance-Assistant\FinSage\tessaractocr\tesseract.exe'
 
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'robbyrthomas516@gmail.com'          # your SMTP username
+# EMAIL_HOST_PASSWORD = 'rrt76229'    # use app password for Gmail
+# DEFAULT_FROM_EMAIL = 'FinSage <you@example.com>'
